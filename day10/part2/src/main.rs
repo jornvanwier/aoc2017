@@ -1,3 +1,5 @@
+use std::num::Wrapping;
+
 fn main() {
     let (input, mut list) = (include_str!("input"), (0..256).collect());
 
@@ -32,6 +34,6 @@ fn reverse_segment(from: usize, length: usize, collection: &mut Vec<i32>) {
             position % list_length,
             (position + take_length - 1) % list_length,
         );
-        take_length -= if take_length > 2 { 2 } else { 0 };
+        take_length = (Wrapping(take_length) - Wrapping(2)).0
     }
 }
