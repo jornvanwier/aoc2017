@@ -18,29 +18,22 @@ fn main() {
         })
         .collect();
 
-        let length = *firewall.keys().max().unwrap() + 1;
+    let length = *firewall.keys().max().unwrap() + 1;
 
     println!("Part 1: {}", get_severity(&firewall, length).1);
 
     let mut score_two = -1;
     for i in 0..3933130 {
-        let mut f = firewall.clone();
-
-        for _ in 0..i {
-            firewall_tick(&mut f)
-        }
-
-        // print_firewall(&f);
-
-        let (caught, _) = get_severity(&f, length);
-        // println!("{}", sev);
-        if !caught {
+        if !firewall.iter().any(|(d, l)| is_hit(*d + i, l.range)) {
             score_two = i;
             break;
         }
     }
 
     println!("Part 2: {}", score_two);
+}
+fn is_hit(n: i32, range: i32) -> bool {
+    n % (2 * (range - 1)) == 0
 }
 
 fn firewall_tick(firewall: &mut HashMap<i32, Layer>) {
@@ -112,12 +105,11 @@ impl Display for Layer {
         let mut range = "".into();
         for i in 0..self.range {
             if i == self.position {
-                range = [range,"[x]".into()].join(" ")
+                range = [range, "[x]".into()].join(" ")
+            } else {
+                range = [range, "[ ]".into()].join(" ")
             }
-            else {
-                range = [range,"[ ]".into()].join(" ")
-            }
-        };
+        }
         write!(f, "{}: {}", self.depth, range)
     }
 }

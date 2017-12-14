@@ -1,32 +1,24 @@
+#![feature(test)]
+
+extern crate test;
+
 use std::num::Wrapping;
 use std::fmt::Write;
 
 fn main() {
     let input = "stpzcrnm";
     // let input = "flqrgnkx";
-    // let input = "a0c2017";
+    // let input = "a0c2017";c
 
-    let row_hashes: Vec<String> = (0..128)
-        .map(|n| knot_hash(&[input, &n.to_string()].join("-")))
-        .collect();
+    let binary_sequences = setup(input);
 
-    let binary_sequences: Vec<String> = row_hashes.iter().map(|h| hash_to_binary(&h)).collect();
-
-    let mut count = 0;
-
-    binary_sequences.iter().for_each(|b| {
-        b.chars().for_each(|c| {
-            if c == '1' {
-                count += 1
-            }
-        })
-    });
+    let count = count_iter(&binary_sequences);
 
     println!("Part 1: {}", count);
 
     let mut regions = 0;
 
-    let mut grid: Vec<Vec<char>> = binary_sequences
+    let mut grid = binary_sequences
         .iter()
         .map(|s| s.chars().collect())
         .collect();
@@ -41,6 +33,22 @@ fn main() {
     }
 
     println!("Part 2: {}", regions);
+}
+
+fn count_iter(binary_sequences: &Vec<String>) -> i32 {
+    binary_sequences.iter().fold(0, |count, sequence| {
+        count + sequence.chars().fold(0, |inner_count, c| {
+            inner_count + if c == '1' { 1 } else { 0 }
+        })
+    })
+}
+
+fn setup(input: &str) -> Vec<String> {
+    let row_hashes: Vec<String> = (0..128)
+        .map(|n| knot_hash(&[input, &n.to_string()].join("-")))
+        .collect();
+
+    row_hashes.iter().map(|h| hash_to_binary(&h)).collect()
 }
 
 fn flow_region(position: (usize, usize), grid: &mut Vec<Vec<char>>) {
@@ -132,5 +140,60 @@ fn reverse_segment(from: usize, length: usize, collection: &mut Vec<i32>) {
             (position + take_length - 1) % list_length,
         );
         take_length = (Wrapping(take_length) - Wrapping(2)).0
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use test::Bencher;
+
+    fn count_for(binary_sequences: &Vec<String>) -> i32 {
+        let mut count = 0;
+
+        binary_sequences.iter().for_each(|b| {
+            b.chars().for_each(|c| {
+                if c == '1' {
+                    count += 1
+                }
+            })
+        });
+        count
+    }
+
+    fn count_for_idx(binary_sequences: &Vec<String>) -> i32 {
+        let mut count = 0;
+        for i in 0..binary_sequences.len() {
+            for j in 0..binary_sequences[i].len() {
+                if binary_sequences[i].chars().nth(j).unwrap() == '1' {
+                    count += 1;
+                }
+            }
+        }
+        count
+    }
+
+    #[bench]
+    fn bench_iter(b: &mut Bencher) {
+        let input = "stpzcrnm";
+        let binary_sequences = setup(input);
+
+        b.iter(|| count_iter(&binary_sequences));
+    }
+
+    #[bench]
+    fn bench_for(b: &mut Bencher) {
+        let input = "stpzcrnm";
+        let binary_sequences = setup(input);
+
+        b.iter(|| count_for(&binary_sequences));
+    }
+
+    #[bench]
+    fn bench_for_idx(b: &mut Bencher) {
+        let input = "stpzcrnm";
+        let binary_sequences = setup(input);
+
+        b.iter(|| count_for_idx(&binary_sequences));
     }
 }
