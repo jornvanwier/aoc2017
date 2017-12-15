@@ -1,3 +1,7 @@
+#![feature(test)]
+
+extern crate test;
+
 use std::i32;
 
 // const START_A: i64 = 65;
@@ -10,37 +14,33 @@ const FACTOR_B: i64 = 48271;
 
 
 fn main() {
-    part1();
-    part2();
+    println!("Part 1: {}", part1());
+    println!("Part 2: {}", part2());
 }
 
-fn part1() {
+fn part1() -> usize {
     let a = Generator::new(START_A, FACTOR_A);
     let b = Generator::new(START_B, FACTOR_B);
 
     // const TAKE: usize = 5;
-    const TAKE: usize = 40000000;
+    const TAKE: usize = 40_000_000;
 
-    let result = a.zip(b)
+    a.zip(b)
         .take(TAKE)
         .filter(|&(a_num, b_num)| last_bytes_match(a_num, b_num, 2))
-        .count();
-
-    println!("Part 1: {}", result);
+        .count()
 }
 
-fn part2() {
+fn part2() -> usize {
     let a = Generator::create_picky(START_A, FACTOR_A, 4);
     let b = Generator::create_picky(START_B, FACTOR_B, 8);
 
-    const TAKE: usize = 5000000;
+    const TAKE: usize = 5_000_000;
 
-    let result = a.zip(b)
+    a.zip(b)
         .take(TAKE)
         .filter(|&(a_num, b_num)| last_bytes_match(a_num, b_num, 2))
-        .count();
-
-    println!("Part 2: {}", result);
+        .count()
 }
 
 fn last_bytes_match(a: i32, b: i32, count: usize) -> bool {
@@ -97,5 +97,20 @@ impl Iterator for Generator {
         } else {
             Some(self.previous as i32)
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+use super::*;
+
+    #[bench]
+    fn bench_part1(b: &mut test::Bencher) {
+        b.iter(|| part1())
+    }
+
+    #[bench]
+    fn bench_part2(b: &mut test::Bencher) {
+        b.iter(|| part2())
     }
 }
