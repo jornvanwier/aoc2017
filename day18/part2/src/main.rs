@@ -3,26 +3,27 @@ use std::collections::HashMap;
 fn main() {
     let input = include_str!("input");
     // let input = include_str!("example");
+    // let input = include_str!("first_example");
 
     let instructions: Vec<Instruction> = input
         .split("\r\n")
         .map(|l| Instruction::from_str(l))
         .collect();
 
-    let mut one = DuetRegisters::new(&instructions, 0);
-    let mut two = DuetRegisters::new(&instructions, 1);
+    let mut zero = DuetRegisters::new(&instructions, 0);
+    let mut one = DuetRegisters::new(&instructions, 1);
 
-    while !(one.is_waiting && two.is_waiting) {
-        if let Some(send) = one.execute_next_instruction() {
-            two.queue.insert(0, send);
-        }
-
-        if let Some(send) = two.execute_next_instruction() {
+    while !(zero.is_waiting && one.is_waiting) {
+        if let Some(send) = zero.execute_next_instruction() {
             one.queue.insert(0, send);
         }
+
+        if let Some(send) = one.execute_next_instruction() {
+            zero.queue.insert(0, send);
+        }
     }
-    
-    println!("Part 2: {}", two.send_count);
+
+    println!("Part 2: {}", one.send_count);
 }
 
 #[derive(Debug)]

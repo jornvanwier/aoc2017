@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
 fn main() {
-    let input = include_str!("input");
-    // let input = include_str!("example");
+    // let input = include_str!("input");
+    let input = include_str!("example");
 
     let instructions: Vec<Instruction> = input
         .split("\r\n")
@@ -42,22 +42,22 @@ impl DuetRegisters {
                 Sound(register) => self.last_sound = Some(*self.get_or_create_register(register)),
                 Set(register, ref value) => {
                     let value = value.get_value(&mut self.registers);
-                    let mut reg = self.get_or_create_register(register);
+                    let reg = self.get_or_create_register(register);
                     *reg = value;
                 }
                 Add(register, ref value) => {
                     let value = value.get_value(&mut self.registers);
-                    let mut reg = self.get_or_create_register(register);
+                    let reg = self.get_or_create_register(register);
                     *reg += value;
                 }
                 Mul(register, ref value) => {
                     let value = value.get_value(&mut self.registers);
-                    let mut reg = self.get_or_create_register(register);
+                    let reg = self.get_or_create_register(register);
                     *reg *= value;
                 }
                 Mod(register, ref value) => {
                     let value = value.get_value(&mut self.registers);
-                    let mut reg = self.get_or_create_register(register);
+                    let reg = self.get_or_create_register(register);
                     *reg %= value;
                 }
                 Recover(register) => {
