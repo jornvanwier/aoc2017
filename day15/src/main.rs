@@ -15,7 +15,7 @@ const FACTOR_B: i64 = 48271;
 
 fn main() {
     println!("Part 1: {}", part1());
-    println!("Part 2: {}", part2());
+    // println!("Part 2: {}", part2());
 }
 
 fn part1() -> usize {
@@ -55,8 +55,6 @@ fn to_bytes(n: &i32) -> &[u8; 8] {
     let val = unsafe { std::mem::transmute(n) };
     val
 }
-
-
 
 struct Generator {
     previous: i64,
@@ -102,7 +100,7 @@ impl Iterator for Generator {
 
 #[cfg(test)]
 mod tests {
-use super::*;
+    use super::*;
 
     #[bench]
     fn bench_part1(b: &mut test::Bencher) {
