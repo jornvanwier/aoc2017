@@ -1,19 +1,31 @@
 use DanceMove::*;
 
 fn main() {
-    //    let input = include_str!("input");
+    let input = include_str!("input");
     //    let input = include_str!("example");
-    let input = include_str!("ruurd");
+    // let input = include_str!("ruurd");
 
     let instructions: Vec<DanceMove> = input.split(",").map(|s| DanceMove::from_str(s)).collect();
 
     let ascii_iter = (0..16).map(|x| (x + 'a' as u8) as char);
-    //    let ascii_iter = (0..5).map(|x| (x + 'a' as u8) as char);
     let mut programs: Vec<char> = ascii_iter.collect();
 
-    println!("{:?}", programs);
+    let mut set = Vec::new();
 
-    instructions.iter().for_each(|instruction| instruction.perform(&mut programs));
+    let times = 1_000_000_000;
+    for i in 0..times {
+        if set.contains(&programs) {
+            println!("{:?}", set);
+            println!("Part 2: {} {}", set[times % i].iter().collect::<String>(), i);
+            break;
+        }
+
+        set.push(programs.clone());
+
+        instructions.iter().for_each(|instruction| {
+            instruction.perform(&mut programs)
+        });
+    }
 
     let result: String = programs.iter().collect();
     println!("Part 1: {}", result);
@@ -27,7 +39,7 @@ fn main() {
 enum DanceMove {
     Spin(usize),
     Exchange(usize, usize),
-    Partner(char, char)
+    Partner(char, char),
 }
 
 impl DanceMove {
@@ -37,7 +49,7 @@ impl DanceMove {
 
         match instruction {
             's' => {
-                let count = chars.next().unwrap().to_string().parse().unwrap();
+                let count = chars.collect::<String>().parse().unwrap();
                 Spin(count)
             }
             'x' => {
@@ -52,7 +64,7 @@ impl DanceMove {
                 let b = chars.nth(1).unwrap();
                 Partner(a, b)
             }
-            _ => unreachable!()
+            _ => unreachable!(),
         }
     }
 
@@ -68,9 +80,10 @@ impl DanceMove {
                         last = *iter.last().unwrap();
                     }
 
-                    (1..programs.len()).rev().zip((1..programs.len() - 1).rev()).for_each(|(a, b)| {
-                        programs.swap(a, b);
-                    });
+                    (1..programs.len())
+                        .rev()
+                        .zip((1..programs.len() - 1).rev())
+                        .for_each(|(a, b)| { programs.swap(a, b); });
 
                     programs[0] = last;
                     programs[1] = first;
@@ -85,5 +98,38 @@ impl DanceMove {
                 programs.swap(a, b);
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_spin1() {
+        let mut r: Vec<char> = "abcde".chars().collect();
+        Spin(1).perform(&mut r);
+        assert_eq!(r, "eabcd".chars().collect::<Vec<char>>());
+    }
+
+    #[test]
+    fn test_spin3() {
+        let mut r: Vec<char> = "abcde".chars().collect();
+        Spin(3).perform(&mut r);
+        assert_eq!(r, "cdeab".chars().collect::<Vec<char>>());
+    }
+
+    #[test]
+    fn exchange() {
+        let mut r: Vec<char> = "eabcd".chars().collect();
+        Exchange(3, 4).perform(&mut r);
+        assert_eq!(r, "eabdc".chars().collect::<Vec<char>>());
+    }
+
+    #[test]
+    fn partner() {
+        let mut r: Vec<char> = "eabdc".chars().collect();
+        Partner('e', 'b').perform(&mut r);
+        assert_eq!(r, "baedc".chars().collect::<Vec<char>>());
     }
 }
