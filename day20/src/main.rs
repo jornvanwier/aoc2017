@@ -42,18 +42,18 @@ fn main() {
 
         let mut remove = Vec::new();
         for particle in &part2ticles {
-            let mut group: Vec<Particle> = part2ticles
+            let mut group: Vec<usize> = part2ticles
                 .iter()
-                .filter(|p| p.position == particle.position)
-                .map(|p| p.clone())
+                .enumerate()
+                .filter(|&(_, p)| p.position == particle.position)
+                .map(|(index, _)| index)
                 .collect();
 
             if group.len() != 1 {
                 remove.append(&mut group)
             }
         }
-
-        part2ticles.retain(|p| !remove.contains(&p));
+                remove.iter().for_each(|i| { part2ticles.remove(*i); })
     }
 
     println!("Part 2: {}", part2ticles.len());
