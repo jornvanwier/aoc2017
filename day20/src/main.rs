@@ -53,7 +53,9 @@ fn main() {
                 remove.append(&mut group)
             }
         }
-                remove.iter().for_each(|i| { part2ticles.remove(*i); })
+        remove.iter().for_each(|i| {
+            part2ticles.remove(*i);
+        })
     }
 
     println!("Part 2: {}", part2ticles.len());
@@ -107,11 +109,7 @@ impl Vec3 {
         let open = input.chars().position(|c| c == '<').unwrap();
         let close = input.chars().skip(open).position(|c| c == '>').unwrap();
 
-        let slice: String = input
-            .chars()
-            .skip(open + 1)
-            .take(close - open - 1)
-            .collect();
+        let slice = &input[open + 1..close];
         let values: Vec<i32> = slice
             .split(',')
             .map(|n| n.trim().parse().expect("Not a number"))
