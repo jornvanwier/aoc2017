@@ -10,7 +10,7 @@ fn main() {
     // let input = include_str!("other");
 
     let rules: HashMap<Matrix<bool>, Matrix<bool>> = input
-        .split("\r\n")
+        .split("\n")
         .map(|l| {
             let mut split = l.split(" => ");
             (
@@ -20,6 +20,7 @@ fn main() {
         })
         .collect();
 
+    println!("{} rules", rules.len());
     // rules.keys().for_each(|m| {
     //     println!("{}", m);
     // });
@@ -37,7 +38,7 @@ fn main() {
     // const ITERATIONS: usize = 2;
 
     for _ in 0..ITERATIONS {
-        println!("{}", matrix);
+        // println!("{}", matrix);
 
         let mut divided = if matrix.size() % 2 == 0 {
             matrix.divide(2)
@@ -46,10 +47,9 @@ fn main() {
             matrix.divide(3)
         };
 
-        divided
-            .data
-            .iter_mut()
-            .for_each(|mut m| replace_by_rule(&mut m, &rules));
+        divided.data.iter_mut().for_each(|mut m| {
+            replace_by_rule(&mut m, &rules)
+        });
 
         matrix = divided.join();
 
@@ -92,10 +92,9 @@ fn find_matching_rule(
 }
 
 fn count_on(matrix: &Matrix<bool>) -> usize {
-    matrix
-        .data
-        .iter()
-        .fold(0, |count, val| count + if *val { 1 } else { 0 })
+    matrix.data.iter().fold(0, |count, val| {
+        count + if *val { 1 } else { 0 }
+    })
 }
 
 fn from_rule_str(input: &str) -> Matrix<bool> {

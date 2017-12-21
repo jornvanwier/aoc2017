@@ -83,6 +83,7 @@ where
                 for inner_row in 0..size {
                     let start = self.flatten_index((col, row + inner_row));
                     let end = self.flatten_index((col + size, row + inner_row));
+                    // println!("{} to {}", start, end);
                     inner_data.append(&mut self.data[start..end].to_vec())
                 }
 
@@ -108,7 +109,8 @@ where
         let mut data = Vec::new();
         for row in 0..size {
             for col in 0..size {
-                let matrix = &self[(col / sub_size, row / sub_size)];
+                let matrix = &self[(row / sub_size, col / sub_size)];
+                // let matrix = &self[(col / sub_size, row / sub_size)];
                 let sub_col = col % sub_size;
                 let sub_row = row % sub_size;
 

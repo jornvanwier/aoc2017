@@ -1,5 +1,6 @@
 fn main() {
     let input = include_str!("input");
+    let input = include_str!("ruurd");
 
     let grid: Vec<Vec<char>> = input.split("\n").map(|l| l.chars().collect()).collect();
 
@@ -82,7 +83,7 @@ impl Heading {
             Up => Down,
             Down => Up,
             Left => Right,
-            Right => Left
+            Right => Left,
         }
     }
 }
