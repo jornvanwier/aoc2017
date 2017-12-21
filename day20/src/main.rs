@@ -1,5 +1,3 @@
-#![feature(vec_remove_item)]
-
 use std::ops::{Add, AddAssign};
 
 fn main() {
@@ -25,7 +23,7 @@ fn main() {
             .min_by_key(|p| p.position.distance_to(zero))
             .map(|c| *c);
     }
-
+    
     let closest_index = part1ticles
         .iter()
         .position(|p| *p == closest.unwrap())
