@@ -60,11 +60,7 @@ fn main() {
 }
 
 fn replace_by_rule(matrix: &mut Matrix<bool>, rules: &HashMap<Matrix<bool>, Matrix<bool>>) {
-    if let Some(replace) = find_matching_rule(matrix, rules) {
-        *matrix = replace;
-    } else {
-        panic!("No matching rule!");
-    }
+    *matrix = find_matching_rule(matrix, rules).expect("No matching rule!");
 }
 
 fn find_matching_rule(

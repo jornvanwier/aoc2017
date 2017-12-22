@@ -83,7 +83,6 @@ where
                 for inner_row in 0..size {
                     let start = self.flatten_index((col, row + inner_row));
                     let end = self.flatten_index((col + size, row + inner_row));
-                    // println!("{} to {}", start, end);
                     inner_data.append(&mut self.data[start..end].to_vec())
                 }
 
@@ -120,7 +119,7 @@ where
 
         let result = Matrix::new(size, data);
 
-        assert_eq!(orig, result.clone().divide(sub_size));
+        // assert_eq!(orig, result.clone().divide(sub_size));
 
         result
     }
